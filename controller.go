@@ -26,12 +26,6 @@ func NewControllers() CONTROLLERSCONTAINER {
 	return make(CONTROLLERSCONTAINER)
 }
 
-// var controllers = make(CONTROLLERSCONTAINER, 64)
-
-// func Controllers() CONTROLLERSCONTAINER {
-// 	return controllers
-// }
-
 func (cc CONTROLLERSCONTAINER) Registry(sc Controller) error {
 	if _, ok := cc[sc.Name()]; ok {
 		return fmt.Errorf("the service controller for the %s unit already exists", sc.Name())
