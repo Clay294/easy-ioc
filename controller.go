@@ -9,13 +9,28 @@ type Controller interface {
 	Name() string
 }
 
+type ImplController struct {
+}
+
+func (*ImplController) Init() error {
+	return nil
+}
+
+func (*ImplController) Name() string {
+	return ""
+}
+
 type CONTROLLERSCONTAINER map[string]Controller
 
-var controllers = make(CONTROLLERSCONTAINER, 64)
-
-func Controllers() CONTROLLERSCONTAINER {
-	return controllers
+func NewControllers() CONTROLLERSCONTAINER {
+	return make(CONTROLLERSCONTAINER)
 }
+
+// var controllers = make(CONTROLLERSCONTAINER, 64)
+
+// func Controllers() CONTROLLERSCONTAINER {
+// 	return controllers
+// }
 
 func (cc CONTROLLERSCONTAINER) Registry(sc Controller) error {
 	if _, ok := cc[sc.Name()]; ok {

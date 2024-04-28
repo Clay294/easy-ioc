@@ -2,8 +2,9 @@ package ioc
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/url"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Handler interface {
@@ -11,13 +12,31 @@ type Handler interface {
 	Registry(gin.IRouter)
 }
 
+type ImplHandler struct{}
+
+func (*ImplHandler) Init() error {
+	return nil
+}
+
+func (*ImplHandler) Name() string {
+	return ""
+}
+
+func (*ImplHandler) Registry(gin.IRouter) {
+
+}
+
 type HANDLERSCONTAINER map[string]Handler
 
-var handlers = make(HANDLERSCONTAINER, 64)
-
-func Handlers() HANDLERSCONTAINER {
-	return handlers
+func NewHandler() HANDLERSCONTAINER {
+	return make(HANDLERSCONTAINER)
 }
+
+// var handlers = make(HANDLERSCONTAINER, 64)
+
+// func Handlers() HANDLERSCONTAINER {
+// 	return handlers
+// }
 
 func (hc HANDLERSCONTAINER) Registry(ah Handler) error {
 	if _, ok := hc[ah.Name()]; ok {
