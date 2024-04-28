@@ -1,4 +1,4 @@
-module github.com/Clay294/easy-ioc
+module github.com/Clay294/easyioc
 
 go 1.22.2
 

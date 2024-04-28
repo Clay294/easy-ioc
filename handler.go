@@ -32,12 +32,6 @@ func NewHandler() HANDLERSCONTAINER {
 	return make(HANDLERSCONTAINER)
 }
 
-// var handlers = make(HANDLERSCONTAINER, 64)
-
-// func Handlers() HANDLERSCONTAINER {
-// 	return handlers
-// }
-
 func (hc HANDLERSCONTAINER) Registry(ah Handler) error {
 	if _, ok := hc[ah.Name()]; ok {
 		return fmt.Errorf("the api handler of unit %s already exists", ah.Name())
