@@ -1,4 +1,4 @@
-package ioc
+package easyioc
 
 import (
 	"fmt"
