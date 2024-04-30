@@ -1,55 +1,41 @@
 package easyioc
 
-import (
-	"fmt"
+import "fmt"
+
+const (
+	ControllersName = "controller"
 )
 
-const ControllerObjectsTableName = "controller"
-
-type ControllerObjct interface {
-	IocObject
+type Controller interface {
+	Object
 }
 
-type ControllerObjectImpl struct {
-	IocObject
+type ControllerImpl struct {
+	Object
 }
 
-// InitGrpcIocObjects 初始化所有grpc对象
-func InitControllerObjects() error {
-	err := InitIocObjects()
+func RegistryController(c Controller) error {
+	return RegistryObject(ControllersName, c)
+}
+
+func GetController(name string) (Controller, error) {
+	o, err := GetObject(ControllersName, name)
 	if err != nil {
-		return err
+		return nil, err
+	}
+	return o.(Controller), nil
+}
+
+func InitControllers() error {
+	oc := GetObjectsContainer(ControllersName)
+	if oc == nil {
+		return fmt.Errorf("the %s container is empty", ControllersName)
+	}
+	for _, cc := range oc.Containers {
+		err := cc.Init()
+		if err != nil {
+			return err
+		}
 	}
 	return nil
-}
-
-// 按需创建GrpcIocObjects的map
-func NewControllerObjectTable(controllerObject ControllerObjct) *IocObjectsContainers {
-	if controllerObjectTable, ok := container.Containter[ControllerObjectsTableName]; ok {
-		return controllerObjectTable
-	}
-
-	iocObjectsContainers := new(IocObjectsContainers)
-	iocObjectsContainers.Containers = make(map[string]IocObject)
-
-	return iocObjectsContainers
-}
-
-func RegistryControllerObject(controllerObject ControllerObjct) error {
-	iocObjectsContainers := NewControllerObjectTable(controllerObject)
-	if iocObjectsContainers.IsExists(controllerObject.Name()) {
-		return fmt.Errorf("the controller ioc object already exists")
-	}
-	iocObjectsContainers.Containers[controllerObject.Name()] = controllerObject
-	container.Containter[ControllerObjectsTableName] = iocObjectsContainers
-	return nil
-}
-
-func GetControllerObject(name string) any {
-	controllerObject := container.Containter[ControllerObjectsTableName].GetIocObject(name)
-	if controllerObject == nil {
-		return fmt.Errorf("the grpc ioc object does not exist")
-	}
-
-	return controllerObject
 }

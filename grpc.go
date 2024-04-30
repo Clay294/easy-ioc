@@ -7,58 +7,54 @@ import (
 )
 
 const (
-	GrpcIocOjectsTableName = "grpc"
+	GrpcServersName = "grpc_server"
 )
 
-// GrpcIocObject grpc对象的方法约束
-type GrpcIocObject interface {
-	IocObject
+// GrpcServer grpc对象的方法约束
+type GrpcServer interface {
+	Object
 	Registry(*grpc.Server)
 }
 
-// GrpcIocObjImpl grpc模板对象
-type GrpcIocObjImpl struct {
-	IocObject
+// GrpcServerImpl grpc模板对象
+type GrpcServerImpl struct {
+	Object
 }
 
 // Registry 向grpc服务器注册grpc服务接口
-func (*GrpcIocObjImpl) Registry(*grpc.Server) {
+func (*GrpcServerImpl) Registry(*grpc.Server) {
 }
 
-// InitGrpcIocObjects 初始化所有grpc对象
-func InitGrpcIocObjects(server *grpc.Server) error {
-	err := InitIocObjects()
+func RegistryGrpcServer(gs GrpcServer) error {
+	return RegistryObject(GrpcServersName, gs)
+}
+
+func GetGrpcServer(name string) (GrpcServer, error) {
+	o, err := GetObject(GrpcServersName, name)
+	if err != nil {
+		return nil, err
+	}
+
+	return o.(GrpcServer), nil
+}
+
+func InitGrpcServers(server *grpc.Server) error {
+	oc := GetObjectsContainer(GrpcServersName)
+	if oc == nil {
+		return fmt.Errorf("the %s container is empty", GrpcServersName)
+	}
+
+	err := oc.initObjects()
 	if err != nil {
 		return err
 	}
-	for _, grpcIocObject := range container.Containter[GrpcIocOjectsTableName].Containers {
-		grpcIocObject.(GrpcIocObject).Registry(server)
+
+	for _, o := range oc.Containers {
+		if gs, ok := o.(GrpcServer); ok {
+			gs.Registry(server)
+		}
+		return fmt.Errorf("the ioc object %s is not grpcserver", o.Name())
 	}
+
 	return nil
-}
-
-// 按需创建GrpcIocObjects的map
-func NewGrpcIocObjectsTable(grpcIocObject GrpcIocObject) *IocObjectsContainers {
-	if grpcObjetsTable, ok := container.Containter[GrpcIocOjectsTableName]; ok {
-		return grpcObjetsTable
-	}
-	return container.Containter[GrpcIocOjectsTableName]
-}
-
-func RegistryGrpcIocObject(grpcIocObject GrpcIocObject) error {
-	grpcIocObjectsTable := NewGrpcIocObjectsTable(grpcIocObject)
-	if grpcIocObjectsTable.IsExists(grpcIocObject.Name()) {
-		return fmt.Errorf("the grpc ioc object already exists")
-	}
-	grpcIocObjectsTable.Containers[grpcIocObject.Name()] = grpcIocObject
-	return nil
-}
-
-func GetGrpcIocObject(name string) any {
-	grpcIocObject := container.Containter[GrpcIocOjectsTableName].GetIocObject(name)
-	if grpcIocObject == nil {
-		return fmt.Errorf("the grpc ioc object does not exist")
-	}
-
-	return grpcIocObject
 }

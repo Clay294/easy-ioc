@@ -1,48 +1,63 @@
 package easyioc
 
-type IocObject interface {
+type Object interface {
 	Init() error
 	Name() string
 }
 
-type IocObjectsContainers struct {
-	Containers map[string]IocObject
+type ObjectsContainer struct {
+	Containers map[string]Object
 }
 
-type IocObjectsImpl struct {
+type ObjectImpl struct {
 }
 
-func (*IocObjectsImpl) Init() error {
+func (*ObjectImpl) Init() error {
 	return nil
 }
 
-func (*IocObjectsImpl) Name() string {
+func (*ObjectImpl) Name() string {
 	return ""
 }
 
-func (iocs *IocObjectsContainers) IsExists(name string) bool {
-	if _, ok := iocs.Containers[name]; ok {
+func (oc *ObjectsContainer) isExists(name string) bool {
+	if _, ok := oc.Containers[name]; ok {
 		return true
 	}
+
 	return false
 }
 
-func (iocs *IocObjectsContainers) GetIocObject(name string) IocObject {
-	if !iocs.IsExists(name) {
+func newObjectsContainer() *ObjectsContainer {
+	return &ObjectsContainer{
+		Containers: make(map[string]Object),
+	}
+}
+
+func (oc *ObjectsContainer) getObject(name string) Object {
+	if !oc.isExists(name) {
 		return nil
 	}
 
-	return iocs.Containers[name]
+	return oc.Containers[name]
 }
 
-func InitIocObjects() error {
-	for _, iocObjects := range container.Containter {
-		for _, iocObject := range iocObjects.Containers {
-			err := iocObject.Init()
-			if err != nil {
-				return err
-			}
+func (oc *ObjectsContainer) registryObject(o Object) string {
+	if oc.getObject(o.Name()) != nil {
+		return o.Name()
+	}
+
+	oc.Containers[o.Name()] = o
+	return ""
+}
+
+func (oc *ObjectsContainer) initObjects() error {
+	for _, o := range oc.Containers {
+		err := o.Init()
+		if err != nil {
+			return err
 		}
 	}
+
 	return nil
 }
