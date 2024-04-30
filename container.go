@@ -14,12 +14,12 @@ func NewDefaultContainer() *DefaultContainter {
 	}
 }
 
-func (dc *DefaultContainter) registryObjectContainer(name string) *ObjectsContainer {
-	if oc, ok := dc.Containter[name]; ok {
+func (dc *DefaultContainter) registryObjectContainer(ocName string) *ObjectsContainer {
+	if oc, ok := dc.Containter[ocName]; ok {
 		return oc
 	}
-	dc.Containter[name] = newObjectsContainer()
-	return dc.Containter[name]
+	dc.Containter[ocName] = newObjectsContainer()
+	return dc.Containter[ocName]
 }
 
 func GetObjectsContainer(ocName string) *ObjectsContainer {
@@ -31,7 +31,7 @@ func GetObjectsContainer(ocName string) *ObjectsContainer {
 
 func RegistryObject(ocName string, o Object) error {
 	name := container.registryObjectContainer(ocName).registryObject(o)
-	if name == "" {
+	if name != "" {
 		return fmt.Errorf("the %s %s has registered", ocName, o.Name())
 	}
 	return nil
