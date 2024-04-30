@@ -42,8 +42,6 @@ func RegistryControllerObject(controllerObject ControllerObjct) error {
 	}
 	iocObjectsContainers.Containers[controllerObject.Name()] = controllerObject
 	container.Containter[ControllerObjectsTableName] = iocObjectsContainers
-	fmt.Println(iocObjectsContainers, "######") //TODO
-	fmt.Println(container, "######")            //TODO
 	return nil
 }
 
