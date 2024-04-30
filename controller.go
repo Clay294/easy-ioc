@@ -28,15 +28,22 @@ func NewControllerObjectTable(controllerObject ControllerObjct) *IocObjectsConta
 	if controllerObjectTable, ok := container.Containter[ControllerObjectsTableName]; ok {
 		return controllerObjectTable
 	}
-	return container.Containter[ControllerObjectsTableName]
+
+	iocObjectsContainers := new(IocObjectsContainers)
+	iocObjectsContainers.Containers = make(map[string]IocObject)
+
+	return iocObjectsContainers
 }
 
 func RegistryControllerObject(controllerObject ControllerObjct) error {
-	controllerObjectTable := NewControllerObjectTable(controllerObject)
-	if controllerObjectTable.IsExists(controllerObject.Name()) {
+	iocObjectsContainers := NewControllerObjectTable(controllerObject)
+	if iocObjectsContainers.IsExists(controllerObject.Name()) {
 		return fmt.Errorf("the controller ioc object already exists")
 	}
-	controllerObjectTable.Containers[controllerObject.Name()] = controllerObject
+	iocObjectsContainers.Containers[controllerObject.Name()] = controllerObject
+	container.Containter[ControllerObjectsTableName] = iocObjectsContainers
+	fmt.Println(iocObjectsContainers, "######") //TODO
+	fmt.Println(container, "######")            //TODO
 	return nil
 }
 
