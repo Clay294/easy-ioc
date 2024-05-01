@@ -10,19 +10,19 @@ const (
 	GrpcServersName = "grpc_server"
 )
 
-// GrpcServer grpc对象的方法约束
 type GrpcServer interface {
 	Object
 	Registry(*grpc.Server)
 }
 
-// GrpcServerImpl grpc模板对象
 type GrpcServerImpl struct {
-	Object
+	ObjectImpl
 }
 
-// Registry 向grpc服务器注册grpc服务接口
-func (*GrpcServerImpl) Registry(*grpc.Server) {
+// func (*GrpcServerImpl) Registry(*grpc.Server) {
+// }
+
+func (GrpcServerImpl) Registry(*grpc.Server) {
 }
 
 func RegistryGrpcServer(gs GrpcServer) error {

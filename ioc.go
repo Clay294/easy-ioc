@@ -12,11 +12,11 @@ type ObjectsContainer struct {
 type ObjectImpl struct {
 }
 
-func (*ObjectImpl) Init() error {
+func (ObjectImpl) Init() error {
 	return nil
 }
 
-func (*ObjectImpl) Name() string {
+func (ObjectImpl) Name() string {
 	return ""
 }
 

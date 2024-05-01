@@ -16,10 +16,10 @@ type Handler interface {
 }
 
 type HandlerImpl struct {
-	Object
+	ObjectImpl
 }
 
-func (*HandlerImpl) Registry(gin.IRouter) {
+func (HandlerImpl) Registry(gin.IRouter) {
 
 }
 

@@ -11,7 +11,7 @@ type Controller interface {
 }
 
 type ControllerImpl struct {
-	Object
+	ObjectImpl
 }
 
 func RegistryController(c Controller) error {
