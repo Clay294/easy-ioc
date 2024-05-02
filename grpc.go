@@ -52,6 +52,7 @@ func InitGrpcServers(server *grpc.Server) error {
 	for _, o := range oc.Containers {
 		if gs, ok := o.(GrpcServer); ok {
 			gs.Registry(server)
+			continue
 		}
 		return fmt.Errorf("the ioc object %s is not grpcserver", o.Name())
 	}

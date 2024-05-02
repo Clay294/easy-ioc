@@ -49,7 +49,9 @@ func InitHandler(urlPrefix string, router gin.IRouter) error {
 	for _, o := range oc.Containers {
 		if h, ok := o.(Handler); ok {
 			h.Registry(router.Group(urlPrefix))
+			continue
 		}
+		return fmt.Errorf("the ioc object %s is not handler", o.Name())
 	}
 
 	return nil
